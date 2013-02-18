@@ -1252,6 +1252,20 @@ class WC_Cart {
 		}
 
 		/**
+		 * get_coupon_discount_amount function.
+		 *
+		 * @access public
+		 * @param mixed $code
+		 * @return void
+		 */
+		public function get_coupon_discount_amount( $code ) {
+			if ( empty( $this->coupon_discount_amounts[ $code ] ) )
+				return 0;
+
+			return $this->coupon_discount_amounts[ $code ];
+		}
+
+		/**
 		 * Calculate totals for the items in the cart.
 		 *
 		 * @access public
@@ -1833,8 +1847,33 @@ class WC_Cart {
 		 *
 		 * @return array of applied coupons
 		 */
-		public function get_applied_coupons() {
-			return (array) $this->applied_coupons;
+		public function get_applied_coupons( $type = 0 ) {
+
+			$coupons = array();
+
+			if ( 1 == $type ) {
+				if ( $this->applied_coupons ) {
+					foreach ( $this->applied_coupons as $index => $code ) {
+						$coupon = new WC_Coupon( $code );
+						if ( $coupon->is_valid() && $coupon->apply_before_tax() )
+							$coupons[] = $code;
+					}
+				}
+
+				$woocommerce->session->coupon_codes   = $this->applied_coupons;
+			} elseif ( $type == 2 ) {
+				if ( $this->applied_coupons ) {
+					foreach ( $this->applied_coupons as $index => $code ) {
+						$coupon = new WC_Coupon( $code );
+						if ( $coupon->is_valid() && ! $coupon->apply_before_tax() )
+							$coupons[] = $code;
+					}
+				}
+			} else {
+				$coupons = array_filter( (array) $this->applied_coupons );
+			}
+
+			return $coupons;
 		}
 
 		/**

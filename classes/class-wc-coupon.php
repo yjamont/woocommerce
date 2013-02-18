@@ -205,7 +205,6 @@ class WC_Coupon {
 	}
 
 
-
 	/**
 	 * Increase usage count fo current coupon.
 	 *

@@ -29,14 +29,12 @@ $available_methods = $woocommerce->shipping->get_available_shipping_methods();
 					<td><strong><?php echo $woocommerce->cart->get_cart_subtotal(); ?></strong></td>
 				</tr>
 
-				<?php if ( $woocommerce->cart->get_discounts_before_tax() ) : ?>
-
-					<tr class="discount">
-						<th><?php _e( 'Cart Discount', 'woocommerce' ); ?> <a href="<?php echo add_query_arg( 'remove_discounts', '1', $woocommerce->cart->get_cart_url() ) ?>"><?php _e( '[Remove]', 'woocommerce' ); ?></a></th>
-						<td>-<?php echo $woocommerce->cart->get_discounts_before_tax(); ?></td>
+				<?php foreach ( $woocommerce->cart->get_applied_coupons( 1 ) as $coupon ) : ?>
+					<tr class="coupon coupon-<?php echo $coupon; ?>">
+						<th><?php echo $coupon; ?> <a href="<?php echo add_query_arg( 'remove_coupon', $coupon, $woocommerce->cart->get_cart_url() ) ?>"><?php _e( '[Remove]', 'woocommerce' ); ?></a></th>
+						<td>-<?php echo woocommerce_price( $woocommerce->cart->get_coupon_discount_amount( $coupon ) ); ?></td>
 					</tr>
-
-				<?php endif; ?>
+				<?php endforeach; ?>
 
 				<?php if ( $woocommerce->cart->needs_shipping() && $woocommerce->cart->show_shipping() && ( $available_methods || get_option( 'woocommerce_enable_shipping_calc' ) == 'yes' ) ) : ?>
 
@@ -114,14 +112,12 @@ $available_methods = $woocommerce->shipping->get_available_shipping_methods();
 					}
 				?>
 
-				<?php if ( $woocommerce->cart->get_discounts_after_tax() ) : ?>
-
-					<tr class="discount">
-						<th><?php _e( 'Order Discount', 'woocommerce' ); ?> <a href="<?php echo add_query_arg( 'remove_discounts', '2', $woocommerce->cart->get_cart_url() ) ?>"><?php _e( '[Remove]', 'woocommerce' ); ?></a></th>
-						<td>-<?php echo $woocommerce->cart->get_discounts_after_tax(); ?></td>
+				<?php foreach ( $woocommerce->cart->get_applied_coupons( 2 ) as $coupon ) : ?>
+					<tr class="coupon coupon-<?php echo $coupon; ?>">
+						<th><?php echo $coupon; ?> <a href="<?php echo add_query_arg( 'remove_coupon', $coupon, $woocommerce->cart->get_cart_url() ) ?>"><?php _e( '[Remove]', 'woocommerce' ); ?></a></th>
+						<td>-<?php echo woocommerce_price( $woocommerce->cart->get_coupon_discount_amount( $coupon ) ); ?></td>
 					</tr>
-
-				<?php endif; ?>
+				<?php endforeach; ?>
 
 				<?php do_action( 'woocommerce_cart_totals_before_order_total' ); ?>
 

@@ -39,7 +39,8 @@ function woocommerce_check_download_folder_protection() {
 		// Force method - protect, add rules to the htaccess file
 		if (!file_exists($downloads_url.'/.htaccess')) :
 			if ($file_handle = @fopen( $downloads_url . '/.htaccess', 'w' )) :
-				fwrite($file_handle, 'deny from all');
+				fwrite($file_handle, 'order deny,allow'."\n");
+				fwrite($file_handle, 'deny from all'."\n");
 				fclose($file_handle);
 			endif;
 		endif;
